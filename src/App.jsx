@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Terminal,
   Code,
@@ -13,37 +13,80 @@ import {
 
 // --- CONFIGURATION: EDIT THIS SECTION ---
 const CONFIG = {
-  githubUsername: 'facebook', // Your GitHub username
-  name: 'ALEX_MORGAN',
-  role: 'FULL_STACK_OPERATIVE',
-  email: 'alex.morgan@example.com',
+  githubUsername: 'whysuman', // Your GitHub username
+  name: 'SUMANTHRA_RAO_YERRABELLY',
+  role: 'LLMS/AI_ENGINEER',
+  email: 's.yerrabelly@ufl.edu',
   sections: {
-    experience: [
+    projects: [
       {
-        title: 'SENIOR_ENG @ CYBER_CORP',
-        period: '2021 - PRESENT',
-        desc: 'Architected zero-trust security protocols. Led migration to micro-frontends.',
-        tech: ['React', 'TypeScript', 'AWS']
+        title: 'EMERGENCY_BUILDING_EVACUATION_SYSTEM',
+        desc: 'Dynamic network-flow evacuation planner using time-expanded graphs to minimize evacuation time under capacity and transit constraints.',
+        tech: ['Python', 'NetworkX', 'Visualization', 'Optimization']
       },
       {
-        title: 'DEV_LEAD @ STARTUP_X',
-        period: '2018 - 2021',
-        desc: 'Built real-time trading dashboards. Optimized rendering engine by 40%.',
-        tech: ['Vue', 'WebGL', 'Node']
+        title: 'REVIEWER_ASSIGNMENT_VIA_NETWORK_FLOW',
+        desc: 'Maximum-flow based reviewer-paper assignment system with feasibility thresholds and runtime scaling analysis.',
+        tech: ['Python', 'Algorithms', 'Graph Theory']
+      },
+      {
+        title: 'KNOWLEDGE_EDITING_FOR_VLMS',
+        desc: 'Research prototype adapting LLM knowledge-editing techniques to vision-language models with locality and generalization analysis.',
+        tech: ['PyTorch', 'Transformers', 'BLIP-2', 'Qwen-VL']
+      },
+      {
+        title: 'MULTI_AGENT_LLM_ORCHESTRATION_PLATFORM',
+        desc: 'Backend infrastructure coordinating multiple LLM agents with role-based permissions, task routing, and observability hooks.',
+        tech: ['FastAPI', 'Casbin', 'Redis', 'Celery']
+      }
+    ],
+    experience: [
+      {
+        title: 'GRADUATE_RESEARCH_VOLUNTEER @ UNIVERSITY_OF_FLORIDA',
+        period: '2024 - PRESENT',
+        desc: 'Research on knowledge editing and controllability in LLMs and VLMs. Extend knowledge-editing frameworks to multi-modal settings, analyze faithfulness, locality, and robustness, and prototype research implementations.',
+        tech: [
+          'Python',
+          'PyTorch',
+          'Transformers',
+          'BLIP-2',
+          'Qwen-VL',
+          'Hugging Face',
+          'NumPy',
+          'Matplotlib'
+        ]
+      },
+      {
+        title: 'AI_ENGINEER @ AIDENAI',
+        period: 'OCT_2024 - JUL_2025',
+        desc: 'Designed backend services and AI-driven workflows for a multi-agent platform. Built RBAC systems, API services, and orchestration pipelines integrating LLMs with focus on scalability and observability.',
+        tech: ['FastAPI', 'SQLAlchemy', 'PostgreSQL', 'Redis', 'Celery', 'LangChain', 'Docker', 'Casbin']
+      },
+      {
+        title: 'AI_ENGINEER_INTERN @ AIDENAI',
+        period: 'JUL_2024 - SEP_2024',
+        desc: 'Implemented internal services and integrations for multi-agent workflows, contributing to architecture decisions and maintainable system design.',
+        tech: ['FastAPI', 'PostgreSQL', 'Redis', 'Docker']
+      },
+      {
+        title: 'SOFTWARE_ENGINEERING_PROJECTS',
+        period: '2022 - PRESENT',
+        desc: 'Algorithm-heavy systems and simulations: dynamic network-flow evacuation modeling, reviewer assignment via max flow, collision detection, and graph algorithm performance analysis.',
+        tech: ['Python', 'NetworkX', 'C++', 'Java', 'LaTeX', 'Git', 'Linux']
       }
     ],
     passions: [
       {
-        title: 'CRYPTOGRAPHY',
-        desc: 'Researching zero-knowledge proofs and decentralized identity.'
+        title: 'MACHINE_LEARNING_SYSTEMS',
+        desc: 'Interested in how learning algorithms behave as real systems: optimization stability, controllability, observability, and failure modes.'
       },
       {
-        title: 'RETRO_COMPUTING',
-        desc: 'Restoring 8-bit systems and writing 6502 assembly.'
+        title: 'ALGORITHMS_&_OPTIMIZATION',
+        desc: 'Strong interest in classical algorithms, network flow, NP-completeness, and simulation-driven performance analysis.'
       },
       {
-        title: 'GENERATIVE_ART',
-        desc: 'Algorithmic visual synthesis using p5.js and GLSL.'
+        title: 'DEVELOPER_TOOLING_&_INFRASTRUCTURE',
+        desc: 'Enjoys designing clean developer experiences, from API design to monitoring pipelines and system ergonomics.'
       }
     ]
   }
@@ -274,7 +317,6 @@ const SectionContent = ({ title, items, onClose, isLoading }) => {
 export default function App() {
   const [activeSection, setActiveSection] = useState(null);
   const [init, setInit] = useState(false);
-  const [repos, setRepos] = useState({ data: [], loading: false, error: null });
 
   useEffect(() => {
     // Boot sequence
@@ -282,55 +324,14 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const fetchRepos = useCallback(async () => {
-    if (repos.data.length > 0) return; // Cache check
-
-    setRepos((prev) => ({ ...prev, loading: true }));
-    try {
-      const response = await fetch(
-        `https://api.github.com/users/${CONFIG.githubUsername}/repos?sort=updated&per_page=6`
-      );
-      if (!response.ok) throw new Error('API Rate Limit');
-
-      const data = await response.json();
-      const formattedRepos = data.map((repo) => ({
-        title: repo.name,
-        desc: repo.description,
-        url: repo.html_url,
-        language: repo.language,
-        tech: repo.topics // Github topics if available
-      }));
-      setRepos({ data: formattedRepos, loading: false, error: null });
-    } catch (error) {
-      // Fallback data if API fails
-      setRepos({
-        data: [
-          {
-            title: 'ACCESS_DENIED',
-            desc: 'Github Uplink Failed. Showing Offline Cache.',
-            url: '#'
-          },
-          {
-            title: 'OFFLINE_PROJECT_A',
-            desc: 'A robust offline-first application.',
-            language: 'JavaScript'
-          }
-        ],
-        loading: false,
-        error: 'Connection Failed'
-      });
-    }
-  }, [repos.data.length]);
-
   const handleSectionClick = (section) => {
     setActiveSection(section);
-    if (section === 'projects') fetchRepos();
   };
 
   const getSectionData = () => {
     switch (activeSection) {
       case 'projects':
-        return repos.data;
+        return CONFIG.sections.projects;
       case 'experience':
         return CONFIG.sections.experience;
       case 'passions':
@@ -432,7 +433,7 @@ export default function App() {
           title={activeSection.toUpperCase()}
           items={getSectionData()}
           onClose={() => setActiveSection(null)}
-          isLoading={activeSection === 'projects' && repos.loading}
+          isLoading={false}
         />
       )}
 
